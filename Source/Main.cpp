@@ -7,7 +7,6 @@
 #include <SFML/Window.hpp>
 
 #include <iostream>
-#include <fstream>
 #include <vector>
 #include <Windows.h>
 #include <dwmapi.h>
