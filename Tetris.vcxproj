@@ -97,10 +97,10 @@
       <AdditionalDependencies>dwmapi.lib;sfml-graphics-s-d.lib;sfml-window-s-d.lib;sfml-system-s-d.lib;opengl32.lib;freetype.lib;winmm.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy  "$(SolutionDir)\Resources\*png" "$(TargetDir)\Resources\*.png"</Command>
+      <Command>copy  "$(SolutionDir)Resources\box.png" "$(TargetDir)Resources\"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>del "$(TargetDir)Resources\*.png"</Command>
+      <Command>del "$(TargetDir)Resources\box.png"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -122,10 +122,10 @@
       <AdditionalDependencies>dwmapi.lib;sfml-graphics-s.lib;sfml-window-s.lib;sfml-system-s.lib;opengl32.lib;freetype.lib;winmm.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy  "$(SolutionDir)\Resources\*png" "$(TargetDir)\Resources\*.png"</Command>
+      <Command>copy  "$(SolutionDir)Resources\box.png" "$(TargetDir)Resources\"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>del "$(TargetDir)Resources\*.png"</Command>
+      <Command>del "$(TargetDir)Resources\box.png"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -143,10 +143,10 @@
       <AdditionalDependencies>dwmapi.lib;sfml-graphics-s-d.lib;sfml-window-s-d.lib;sfml-system-s-d.lib;opengl32.lib;freetype.lib;winmm.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy  "$(SolutionDir)\Resources\*png" "$(TargetDir)\Resources\*.png"</Command>
+      <Command>copy  "$(SolutionDir)Resources\box.png" "$(TargetDir)Resources\"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>del "$(TargetDir)Resources\*.png"</Command>
+      <Command>del "$(TargetDir)Resources\box.png"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -168,10 +168,10 @@
       <AdditionalDependencies>dwmapi.lib;sfml-graphics-s.lib;sfml-window-s.lib;sfml-system-s.lib;opengl32.lib;freetype.lib;winmm.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy  "$(SolutionDir)\Resources\*png" "$(TargetDir)\Resources\*.png"</Command>
+      <Command>copy  "$(SolutionDir)Resources\box.png" "$(TargetDir)Resources\"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>del "$(TargetDir)Resources\*.png"</Command>
+      <Command>del "$(TargetDir)Resources\box.png"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -9,7 +9,6 @@
 #include <iostream>
 #include <vector>
 #include <Windows.h>
-#include <dwmapi.h>
 #include <winuser.h>
 
 #define UID(x, y)  unsigned int(((x) + COLS * (y)))
