@@ -31,8 +31,9 @@ struct piece
 {
 	v2 pos = { 6 , 0 };
 
-	int shape_n = rand() % 4;
-	int orientation = 0;
+	int shape_n = rand() % TETRADS;
+	//pseudo-rotation (+1)
+	int orientation = 1;
 
 	v2 *cellsp = shapes[shape_n].states[0];
 
@@ -43,7 +44,7 @@ struct piece
 
 	void getIDs()
 	{
-		for (size_t i = 0; i < 4; i++)
+		for (size_t i = 0; i < BLOCKS; i++)
 		{
 			ids[i] = UID(pos.x + cellsp[i].x, pos.y + cellsp[i].y);
 			grid[ids[i]] = { blocked, color };
@@ -52,7 +53,7 @@ struct piece
 
 	bool checkDown()
 	{
-		for (size_t i = 0; i < 4; i++)
+		for (size_t i = 0; i < BLOCKS; i++)
 		{
 			if (grid[ids[i] + COLS].isBlock || pos.y + 1 + cellsp[i].y >= ROWS) return false;
 		}
@@ -69,7 +70,7 @@ struct piece
 	}
 	void moveLeft()
 	{
-		for (size_t i = 0; i < 4; i++)
+		for (size_t i = 0; i < BLOCKS; i++)
 			if (pos.x + cellsp[i].x <= 0 ||
 				grid[UID(pos.x -1 + cellsp[i].x, pos.y + cellsp[i].y)].isBlock
 				) return;
@@ -78,7 +79,7 @@ struct piece
 	}
 	void moveRight()
 	{
-		for (size_t i = 0; i < 4; i++) 
+		for (size_t i = 0; i < BLOCKS; i++) 
 			if (pos.x + cellsp[i].x >= COLS-1 || 
 				grid[UID(pos.x+1 + cellsp[i].x, pos.y + cellsp[i].y)].isBlock
 				) return;
@@ -87,9 +88,20 @@ struct piece
 	}
 	void rotate()
 	{
-		if (orientation < 3) orientation++;
-		else orientation = 0;
+		orientation = ++orientation % BLOCKS;
 
+		for (size_t i = 0; i < BLOCKS; i++) 
+		{
+			if (grid[UID(	pos.x + shapes[shape_n].states[orientation + 1][i].x,
+							pos.y + shapes[shape_n].states[orientation + 1][i].y)].isBlock ||
+				pos.x + shapes[shape_n].states[orientation + 1][i].x > COLS || 
+				pos.x + shapes[shape_n].states[orientation + 1][i].x < 0	)
+				//pos.y + shapes[shape_n].states[orientation + 1][i].y > ROWS)
+			{
+				orientation--; return;
+			}
+		}
+		
 		cellsp = shapes[shape_n].states[orientation];
 	}
 
