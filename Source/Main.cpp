@@ -6,17 +6,22 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 
-#include <iostream>
 #include <vector>
-#include <Windows.h>
+#include <windows.h>
 #include <winuser.h>
 
 #define UID(x, y)  unsigned int(((x) + COLS * (y)))
 #define BACKGROUND {10, 10, 10}
 
-const unsigned int COLS = 14;
-const unsigned int ROWS = 26;
-const unsigned int CELL_SIZE = 34;
+#define STATES	4
+#define BLOCKS	4
+#define TETRADS 7
+
+const unsigned int COLS = 10;
+const unsigned int ROWS = 24;
+const unsigned int CELL_SIZE = 36;
+
+#include "../Headers/Box.h"
 
 struct square
 {
@@ -29,23 +34,23 @@ struct square
 
 struct piece
 {
-	v2 pos = { 6 , 0 };
+	v2 pos = { int(6) , int(0) };
 
 	int shape_n = rand() % TETRADS;
-	//pseudo-rotation (+1)
-	int orientation = 1;
+	int orientation = 0;
 
 	v2 *cellsp = shapes[shape_n].states[0];
-
 	int ids[4] = {0, 0, 0, 0};
-	bool blocked = 0;
 
+	bool blocked = 0;
 	sf::Color color = shapes[shape_n].col;
 
 	void getIDs()
 	{
+		// Updates tetrad blocks
 		for (size_t i = 0; i < BLOCKS; i++)
 		{
+			grid[ids[i]] = { false, BACKGROUND };
 			ids[i] = UID(pos.x + cellsp[i].x, pos.y + cellsp[i].y);
 			grid[ids[i]] = { blocked, color };
 		}
@@ -70,6 +75,7 @@ struct piece
 	}
 	void moveLeft()
 	{
+		// Collision check
 		for (size_t i = 0; i < BLOCKS; i++)
 			if (pos.x + cellsp[i].x <= 0 ||
 				grid[UID(pos.x -1 + cellsp[i].x, pos.y + cellsp[i].y)].isBlock
@@ -79,6 +85,7 @@ struct piece
 	}
 	void moveRight()
 	{
+		// Collision check
 		for (size_t i = 0; i < BLOCKS; i++) 
 			if (pos.x + cellsp[i].x >= COLS-1 || 
 				grid[UID(pos.x+1 + cellsp[i].x, pos.y + cellsp[i].y)].isBlock
@@ -88,25 +95,35 @@ struct piece
 	}
 	void rotate()
 	{
-		orientation = ++orientation % BLOCKS;
+		orientation = ++orientation % STATES;
 
-		for (size_t i = 0; i < BLOCKS; i++) 
+		int next_state = 0;
+
+		if (orientation < 3) next_state++;
+		else next_state = 0;
+
+		for (size_t i = 0; i < BLOCKS; i++)
 		{
-			if (grid[UID(	pos.x + shapes[shape_n].states[orientation + 1][i].x,
-							pos.y + shapes[shape_n].states[orientation + 1][i].y)].isBlock ||
-				pos.x + shapes[shape_n].states[orientation + 1][i].x > COLS || 
-				pos.x + shapes[shape_n].states[orientation + 1][i].x < 0	)
-				//pos.y + shapes[shape_n].states[orientation + 1][i].y > ROWS)
+			if (grid[UID(
+					pos.x + shapes[shape_n].states[next_state][i].x,
+					pos.y + shapes[shape_n].states[next_state][i].y)].isBlock ||
+
+					pos.x + shapes[shape_n].states[next_state][i].x > COLS ||
+					pos.x + shapes[shape_n].states[next_state][i].x < 0	||
+
+					pos.y + shapes[shape_n].states[next_state][i].y > ROWS)
 			{
 				orientation--; return;
 			}
 		}
-		
+
 		cellsp = shapes[shape_n].states[orientation];
 	}
 
 } *tetrads;
 
+sf::Clock mclock;
+sf::Time mtime;
 sf::Event event;
 sf::View view;
 
@@ -128,11 +145,12 @@ void Tick()
 	// Check for filled lines
 	for (size_t x = 0; x < COLS; x++)
 	{
-		if (!grid[UID(x, 25)].isBlock)
+		if (!grid[UID(x, ROWS-1)].isBlock)
 		{
 			goto skip;
 		}
 	}
+
 	// Second iteration to remove & move down
 	for (size_t x = 0; x < COLS; x++)
 	{
@@ -184,67 +202,71 @@ void Events(sf::RenderWindow* window)
 	}
 }
 
-INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, INT nCmdShow)
+int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char* lpCmdLine, int nCmdShow)
 {
-#if !NDEBUG
+#if !NDEBUG && WIN32 // Allows use stdout (usefull when debuggin)
 	AllocConsole();
-	freopen("CONOUT$", "w", stdout);	// lol
+	freopen("CONOUT$", "w", stdout); // Black magic
 #endif
 
 	srand(time(NULL));
 
-	sf::RenderWindow window(sf::VideoMode(COLS * CELL_SIZE, ROWS * CELL_SIZE), "vex::Tetris", sf::Style::Close | sf::Style::Titlebar);
-	window.setVerticalSyncEnabled(true);
+	// Window initalization
 
+	sf::RenderWindow window(sf::VideoMode(COLS * CELL_SIZE, ROWS * CELL_SIZE), "vex::Tetris", sf::Style::Close | sf::Style::Titlebar);
+	window.setIcon(icon.width, icon.height, icon.pixel_data);
+	window.setVerticalSyncEnabled(true);
 	view = window.getDefaultView();
 
-	sf::Texture box_texture;
-	if (box_texture.loadFromFile("./Resources/box.png")) box_texture.setSmooth(true);
+	// Resource-realted
+
+	sf::Image	img;			img.create(box.width, box.height, box.pixel_data);
+	sf::Texture box_texture;	box_texture.loadFromImage(img);
 
 	sf::RectangleShape box;
 	box.setTexture(&box_texture);
 	box.setSize(sf::Vector2f(CELL_SIZE, CELL_SIZE));
 
-	sf::Clock clock;
-	sf::Time time;
-
-	grid = new square[COLS * ROWS];
+	// Obj allocation
+	grid	= new square[COLS * ROWS];
 	tetrads = new piece[255];
-	//tetrads[0].exists = true;
 
 	while (window.isOpen())
 	{
+		// Erase screen
 		window.clear();
-		Events(&window);
 		window.setView(view);
 
-		tetrads[current].getIDs();
+		// Events handle
+		Events(&window);
 
-		time = clock.getElapsedTime();
-		if (time.asSeconds() >= 0.8)
+		// Checks for ticking ()
+		mtime = mclock.getElapsedTime();
+		if (mtime.asSeconds() >= 1/1.25)
 		{
-			clock.restart();
+			mclock.restart();
 			Tick();
 		}
+
+		// Update current tetrad
+		tetrads[current].getIDs();
 		
+		// Drawing loop
 		for (size_t x = 0; x < COLS; x++) {
 			for (size_t y = 0; y < ROWS; y++) {
 
 				box.setPosition(x * CELL_SIZE, y * CELL_SIZE);
 				box.setFillColor(grid[UID(x, y)].color);
 
-				if (!grid[UID(x, y)].isBlock)
-				{
-					grid[UID(x, y)].color = BACKGROUND;
-				}
-
 				window.draw(box);
 			}
 		}
 
+		// Just display content to the window
 		window.display();
 	}
 
+	// Cleaning heap
 	delete[] grid;
 	delete[] tetrads;
 

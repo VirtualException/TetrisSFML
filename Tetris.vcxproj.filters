@@ -15,18 +15,29 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Headers\Shapes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Box.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="Source\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Resources\box.png">
+    <ResourceCompile Include="Resources\Tetris.rc">
       <Filter>Resource Files</Filter>
-    </Image>
+    </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Headers\Shapes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <Image Include="Resources\ico.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
