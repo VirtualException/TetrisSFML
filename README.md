@@ -9,7 +9,7 @@ C++\SFML Tetris Game
  ╔╝╚╗ ║║═╣ ║╚╗║║ ║║╠══║╚═══╝║╚═╝║╔╝╚╗  ║║║║║║║╚═╝║
  ╚══╝ ╚══╝ ╚═╝╚╝ ╚╝╚══╝     ╚═══╝╚══╝  ╚╝╚╝╚╝╚═══╝
 ~~~
-![alt text](https://raw.githubusercontent.com/VirtualException/TetrisSFML/master/Resources/tetris.jpg)
+![alt text](https://raw.githubusercontent.com/VirtualException/TetrisSFML/master/Resources/tetris.png)
 <br/>
 <p1>
 First compile wont work because of missing resources. Just copy 'Resources' folder into build dir.
