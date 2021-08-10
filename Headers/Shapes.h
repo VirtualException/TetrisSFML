@@ -1,7 +1,3 @@
-#define STATES	4
-#define BLOCKS	4
-#define TETRADS 7
-
 struct v2
 {
 	int x;
